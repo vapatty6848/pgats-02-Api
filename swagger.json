@@ -1,0 +1,142 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Transferências e Usuários",
+    "version": "1.0.0",
+    "description": "API para login, registro, consulta de usuários e transferências."
+  },
+  "paths": {
+    "/register": {
+      "post": {
+        "summary": "Registrar novo usuário",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "favorecido": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "username",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário registrado"
+          },
+          "409": {
+            "description": "Usuário já existe"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "summary": "Login de usuário",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "username",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login realizado"
+          },
+          "401": {
+            "description": "Credenciais inválidas"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "Consultar todos os usuários",
+        "responses": {
+          "200": {
+            "description": "Lista de usuários"
+          }
+        }
+      }
+    },
+    "/transfer": {
+      "post": {
+        "summary": "Realizar transferência",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "remetente": {
+                    "type": "string"
+                  },
+                  "destinatario": {
+                    "type": "string"
+                  },
+                  "valor": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "remetente",
+                  "destinatario",
+                  "valor"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Transferência realizada"
+          },
+          "400": {
+            "description": "Erro na transferência"
+          }
+        }
+      }
+    },
+    "/transfers": {
+      "get": {
+        "summary": "Consultar todas as transferências",
+        "responses": {
+          "200": {
+            "description": "Lista de transferências"
+          }
+        }
+      }
+    }
+  }
+}
