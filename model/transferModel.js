@@ -1,6 +1,2 @@
 // transferModel.js
-const transfers = [];
-
-module.exports = {
-  transfers,
-};
+export const transfers = [];

@@ -3,15 +3,24 @@
   "version": "1.0.0",
   "description": "Esta API permite realizar operações de registro, login, consulta de usuários e transferências de valores entre usuários. O banco de dados é em memória, ideal para aprendizado de testes e automação de APIs.",
   "main": "app.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha 'test/**/*.test.js' --timeout 1000",
     "start": "node server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/chai": "^5.2.2",
+    "@types/mocha": "^10.0.10",
+    "@types/sinon": "^17.0.4",
+    "@types/supertest": "^6.0.3",
+    "chai": "^5.2.1",
     "express": "^5.1.0",
+    "mocha": "^11.7.1",
+    "sinon": "^21.0.0",
+    "supertest": "^7.1.4",
     "swagger-ui-express": "^5.0.1"
   }
 }

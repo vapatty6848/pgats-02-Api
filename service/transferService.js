@@ -1,8 +1,11 @@
 // transferService.js
-const { transfers } = require('../model/transferModel');
-const { getUser } = require('./userService');
+/* const { transfers } = require('../model/transferModel');
+const { getUser } = require('./userService'); */
 
-function transfer({ remetente, destinatario, valor }) {
+import { transfers } from '../model/transferModel.js';
+import { getUser } from './userService.js';
+
+export function transfer({ remetente, destinatario, valor }) {
   const remetenteUser = getUser(remetente);
   const destinatarioUser = getUser(destinatario);
   if (!remetenteUser || !destinatarioUser) {
@@ -21,11 +24,6 @@ function transfer({ remetente, destinatario, valor }) {
   return { transfer };
 }
 
-function getTransfers() {
+export function getTransfers() {
   return transfers;
 }
-
-module.exports = {
-  transfer,
-  getTransfers,
-};

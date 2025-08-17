@@ -1,6 +1,2 @@
 // userModel.js
-const users = [];
-
-module.exports = {
-  users,
-};
+export const users = [];

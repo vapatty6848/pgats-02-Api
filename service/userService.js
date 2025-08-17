@@ -1,7 +1,8 @@
 // userService.js
-const { users } = require('../model/userModel');
+//const { users } = require('../model/userModel');
+import { users } from '../model/userModel.js';
 
-function registerUser({ username, password, favorecido }) {
+export function registerUser({ username, password, favorecido }) {
   if (users.find(u => u.username === username)) {
     return { error: 'Usuário já existe.' };
   }
@@ -10,23 +11,16 @@ function registerUser({ username, password, favorecido }) {
   return { user };
 }
 
-function loginUser({ username, password }) {
+export function loginUser({ username, password }) {
   const user = users.find(u => u.username === username && u.password === password);
   if (!user) return { error: 'Credenciais inválidas.' };
   return { user };
 }
 
-function getUsers() {
+export function getUsers() {
   return users;
 }
 
-function getUser(username) {
+export function getUser(username) {
   return users.find(u => u.username === username);
 }
-
-module.exports = {
-  registerUser,
-  loginUser,
-  getUsers,
-  getUser,
-};

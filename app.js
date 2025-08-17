@@ -1,9 +1,9 @@
-// app.js
-const express = require('express');
-const userController = require('./controller/userController');
-const transferController = require('./controller/transferController');
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger.json');
+
+import express from 'express';
+import * as userController from './controller/userController.js';
+import * as transferController from './controller/transferController.js';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './swagger.json' assert { type: 'json' };
 
 const app = express();
 app.use(express.json());
@@ -20,4 +20,4 @@ app.get('/transfers', transferController.getTransfers);
 // Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-module.exports = app;
+export default app;
