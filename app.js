@@ -10,12 +10,12 @@ app.use(express.json());
 
 // Rotas de usuário
 app.post('/register', userController.register);
-app.post('/login', userController.login);
-app.get('/users', userController.getUsers);
+app.post('/login', authenticateToken, userController.login);
+app.get('/users', authenticateToken, userController.getUsers);
 
 // Rotas de transferência
-app.post('/transfer', transferController.transfer);
-app.get('/transfers', transferController.getTransfers);
+app.post('/transfer', authenticateToken, transferController.transfer);
+app.get('/transfers', authenticateToken, transferController.getTransfers());
 
 // Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
