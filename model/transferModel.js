@@ -1,2 +1,6 @@
-// transferModel.js
-export const transfers = [];
+// In-memory transfer database
+const transfers = [];
+
+module.exports = {
+  transfers
+};

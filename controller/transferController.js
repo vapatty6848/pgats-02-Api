@@ -1,24 +1,23 @@
 
-import { transferService }from '../service/transferService.js';
+const express = require('express');
+const router = express.Router();
+const transferService = require('../service/transferService');
+const authenticateToken = require('../middleware/authenticateToken');
 
-export function transfer(req, res) {
+router.post('/', authenticateToken, (req, res) => {
+  const { from, to, value } = req.body;
+  if (!from || !to || typeof value !== 'number') return res.status(400).json({ error: 'Campos obrigatórios: from, to, value' });
   try {
-      const { remetente, destinatario, valor } = req.body;
-  if (!remetente || !destinatario || typeof valor !== 'number') {
-    return res.status(400).json({ error: 'Remetente, destinatário e valor são obrigatórios.' });
+    const transfer = transferService.transfer({ from, to, value });
+    res.status(201).json(transfer);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
+});
 
-  const result = transferService.transfer({ remetente, destinatario, valor });
 
-  if (result.error) return res.status(400).json(result);
-    res.status(201).json(result.transfer);
+router.get('/', authenticateToken, (req, res) => {
+  res.json(transferService.listTransfers());
+});
 
- } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-
-}
-
-export function getTransfers(req, res) {
-  res.json(transferService.getTransfers());
-}
+module.exports = router;
