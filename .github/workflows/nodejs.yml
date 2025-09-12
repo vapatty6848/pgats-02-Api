@@ -35,7 +35,7 @@ jobs:
       run: sleep 8
 
     - name: Rodar os testes de API via HTTP
-      run: npm run test-external
+      run: npm run test-rest-external
 
     - name: Rodar os testes de API via GraphQL
       run: npm run test-graphql-external
