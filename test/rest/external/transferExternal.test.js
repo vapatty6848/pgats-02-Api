@@ -1,13 +1,14 @@
 // Bibliotecas
 const request = require('supertest');
 const { expect } = require('chai');
+require('dotenv').config();
 
 // Testes
 describe('Transfer', () => {
     describe('POST /transfers', () => {
         // Capturar o token antes de cada teste
         beforeEach(async () => {
-            const respostaLogin = await request('http://localhost:3000')
+            const respostaLogin = await request(process.env.BASE_URL_REST)
                 .post('/users/login')
                 .send({
                     username: 'julio',
@@ -21,7 +22,7 @@ describe('Transfer', () => {
 
              // Realizar transferencias
         it('Quando informo remetente e destinatario inexistentes recebo 400', async () => {
-            const resposta = await request('http://localhost:3000')
+            const resposta = await request(process.env.BASE_URL_REST)
                 .post('/transfers')
                 .set('Authorization', `Bearer ${token}`)
                 .send({
@@ -35,7 +36,7 @@ describe('Transfer', () => {
         });
 
         it('Usando Mocks: Quando informo remetente e destinatario inexistentes recebo 400', async () => {
-            const resposta = await request("http://localhost:3000")
+            const resposta = await request(process.env.BASE_URL_REST)
                 .post('/transfers')
                 .set('Authorization', `Bearer ${token}`)
                 .send({
@@ -49,7 +50,7 @@ describe('Transfer', () => {
         });
 
         it('Usando Mocks: Quando informo valores válidos eu tenho sucesso com 201 CREATED', async () => {
-            const resposta = await request('http://localhost:3000')
+            const resposta = await request(process.env.BASE_URL_REST)
                 .post('/transfers')
                 .set('Authorization', `Bearer ${token}`)
                 .send({
