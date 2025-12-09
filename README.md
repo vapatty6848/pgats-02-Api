@@ -551,4 +551,4 @@ Projeto desenvolvido como Trabalho de Conclusão da Disciplina  de Testes de Per
 - [Documentação K6](https://k6.io/docs/)
 - [K6 Faker Extension](https://github.com/szkiba/xk6-faker)
 - [Best Practices K6](https://k6.io/docs/testing-guides/test-types/)
- K6_WEB_DASHBOARD_EXPORT=\"test/test-reports/html-report.html
+
