@@ -15,17 +15,29 @@ Este projeto contém testes de performance automatizados usando K6 para validar 
 
 
 test/k6/
+
 ├── checkout.test.js           # Teste principal de performance
+
 ├── userLogin.test.js          # Teste de login com data-driven
+
 ├── helpers/
-│   ├── emailGenerator.js      # Gerador de emails com Faker
+
+│   ├── emailGenerator.js      # Gerador de emails com 
+
 │   ├── getBaseURL.js          # Helper para variável de ambiente
+
 │   ├── loginHelper.js         # Helper reutilizável de login
+
 │   └── README.md
+
 ├── reports/
+
 │   ├── checkout-report.json   # Relatório em JSON
+
 │   ├── checkout-report.html   # Relatório visual em HTML
+
 │   └── generate-html.js       # Script gerador de HTML
+
 └── data/
     └── data.login.test.json   # Dados para data-driven testing
 
@@ -40,17 +52,24 @@ test/k6/
 
 export const options = {
   stages: [
+  
     { duration: "5s", target: 5 },
-    { duration: "10s", target: 10 },
+    
+    { duration: "10s", target: 10 
+    
     { duration: "5s", target: 10 },
+    
     { duration: "5s", target: 0 },
   ],
   thresholds: {
+  
     http_req_duration: ["p(95)<2000"],
+    
     transfer_duration: ["p(95)<2000"]
 };
 
-**Explicação**: Definido como critério de sucesso para o teste. O teste passa apenas se 95% das requisições HTTP e transferências forem executadas em menos de 2 segundos.
+**Explicação**: Definido como critério de sucesso para o teste. 
+O teste passa apenas se 95% das requisições HTTP e transferências forem executadas em menos de 2 segundos.
 
 ---
 
@@ -60,20 +79,25 @@ export const options = {
 
 
 check(senderRegisterResponse, {
+
   "Sender Register status is 201": (r) => r.status === 201,
 });
 
 
 check(response, {
+
   "Login status is 200": (r) => r.status === 200,
 });
 
 
 check(checkoutResponse, {
+
   "Checkout status is 201": (r) => r.status === 201,
 });
 
-**Explicação**: Validações que verificam se as respostas HTTP estão conforme esperado. Similar a assertions em testes unitários, mas não interrompem a execução do teste.
+
+**Explicação**: Validações que verificam se as respostas HTTP estão conforme esperado. 
+Similar a assertions em testes unitários, mas não interrompem a execução do teste.
 
 ---
 
@@ -86,13 +110,18 @@ import http from "k6/http";
 import { check } from "k6";
 
 export function login(baseURL, username, password) {
+
   const loginPayload = JSON.stringify({
+  
     username: username,
+    
     password: password,
   });
 
   const params = {
+  
     headers: {
+    
       "Content-Type": "application/json",
     },
   };
@@ -100,11 +129,14 @@ export function login(baseURL, username, password) {
   const response = http.post(`${baseURL}/users/login`, loginPayload, params);
 
   check(response, {
+  
     "Login status is 200": (r) => r.status === 200,
   });
 
-  if (response.status === 200) {
+  if (response.status === 200) 
+  
     const body = JSON.parse(response.body);
+    
     return body.token;
   }
 
@@ -118,7 +150,8 @@ export function login(baseURL, username, password) {
 senderToken = login(baseURL, senderUsername, password);
 
 
-**Explicação**: Função reutilizável que encapsula a lógica de login. Pode ser usada em múltiplos testes, promovendo DRY (Don't Repeat Yourself).
+**Explicação**: Função reutilizável que encapsula a lógica de login. 
+Pode ser usada em múltiplos testes, promovendo DRY (Don't Repeat Yourself).
 
 ---
 
@@ -127,19 +160,25 @@ senderToken = login(baseURL, senderUsername, password);
 **Onde**: `test/k6/checkout.test.js` (linhas 8, 85)
 
 
-import { Trend } from "k6/metrics";
+import { Trend } from "k6/metrics
+
 const transferDuration = new Trend("transfer_duration");
 
 
 const checkoutResponse = http.post(
+
   `${baseURL}/transfers`,
+  
   checkoutPayload,
+  
   params
 );
+
 transferDuration.add(checkoutResponse.timings.duration);
 
 
-**Explicação**: Métrica customizada que rastreia a duração das transferências especificamente. Permite análise detalhada de performance de endpoints críticos.
+**Explicação**: Métrica customizada que rastreia a duração das transferências especificamente. 
+Permite análise detalhada de performance de endpoints críticos.
 
 ---
 
@@ -174,16 +213,21 @@ const recipientUsername = generateRandomEmail();
 
 
 export function getBaseURL() {
-  return __ENV.BASE_URL || "http://localhost:3000";
-}
-**Uso no teste**: `test/k6/checkout.test.js` (linha 20)
 
+  return __ENV.BASE_URL || "http://localhost:3000";
+  
+}
+
+
+
+
+**Uso no teste**: `test/k6/checkout.test.js` (linha 20)
 
 const baseURL = getBaseURL();
 
 
-**Como executar com variável de ambiente**:
 
+**Como executar com variável de ambiente**:
 
 k6 run test/k6/checkout.test.js -e BASE_URL=https://api.production.com`
 
@@ -196,10 +240,15 @@ k6 run test/k6/checkout.test.js -e BASE_URL=https://api.production.com`
 **Onde**: `test/k6/checkout.test.js` (linhas 11-16)
 
 export const options = {
-  stages: [
+
+  stages: 
+  
     { duration: "5s", target: 5 }, // Ramp-up: 0 → 5 VUs em 5s
+    
     { duration: "10s", target: 10 }, // Carga: 5 → 10 VUs em 10s
+    
     { duration: "5s", target: 10 }, // Sustentação: mantém 10 VUs por 5s
+    
     { duration: "5s", target: 0 }, // Ramp-down: 10 → 0 VUs em 5s
   ],
   // ...
@@ -215,17 +264,26 @@ export const options = {
 **Onde**: `test/k6/checkout.test.js` (linhas 62-65, 79)
 
 let senderToken, recipientToken;
+
 group("Login dos Usuários", function () {
+
   senderToken = login(baseURL, senderUsername, password);
+  
   recipientToken = login(baseURL, recipientUsername, password);
+  
 });
 
 // reutiliza o token
 if (senderToken && recipientToken) {
+
   group("Checkout (Transferência)", function () {
+  
     const params = {
+    
       headers: {
+      
         "Content-Type": "application/json",
+        
         Authorization: `Bearer ${senderToken}`, // Token reutilizado aqui
       },
     };
@@ -234,7 +292,8 @@ if (senderToken && recipientToken) {
 }
 
 
-**Explicação**: O token JWT obtido no login é armazenado e reutilizado na requisição de transferência. Simula comportamento real onde o usuário se autentica uma vez e usa o token em múltiplas operações.
+**Explicação**: O token JWT obtido no login é armazenado e reutilizado na requisição de transferência.
+Simula comportamento real onde o usuário se autentica uma vez e usa o token em múltiplas operações.
 
 ---
 
@@ -256,7 +315,8 @@ const checkoutResponse = http.post(
   params
 );
 
-**Explicação**: Implementa autenticação JWT Bearer no header Authorization. O token é extraído do login e usado para autorizar a operação de transferência.
+**Explicação**: Implementa autenticação JWT Bearer no header Authorization.
+O token é extraído do login e usado para autorizar a operação de transferência.
 
 ---
 
@@ -268,6 +328,7 @@ const checkoutResponse = http.post(
 import { SharedArray } from "k6/data";
 
 const dataUsers = new SharedArray("dataUsers", function () {
+
   return JSON.parse(open("../data/data.login.test.json"));
 });
 
@@ -277,14 +338,19 @@ const dataUsers = new SharedArray("dataUsers", function () {
 [
   {
     "email": "john@example.com",
+    
     "password": "password123"
   },
+  
   {
     "email": "jane@example.com",
+    
     "password": "password456"
-  },
+  
+  
   {
     "email": "bob@example.com",
+    
     "password": "password789"
   }
 ]
@@ -294,16 +360,20 @@ const dataUsers = new SharedArray("dataUsers", function () {
 
 ```
 export default function () {
+
   const user = dataUsers[(__VU - 1) % dataUsers.length];
 
   const loginPayload = JSON.stringify({
+  
     username: user.email,
+    
     password: user.password,
   });
   // ...
 }
 
-**Explicação**: Carrega dados de teste de arquivo JSON externo. Cada VU (Virtual User,  SharedArray/k6 ) usa um usuário diferente do array, permitindo testes parametrizados (reaproveitamento).
+**Explicação**: Carrega dados de teste de arquivo JSON externo. 
+Cada VU (Virtual User,  SharedArray/k6 ) usa um usuário diferente do array, permitindo testes parametrizados (reaproveitamento).
 
 ---
 
@@ -315,25 +385,35 @@ export default function () {
 group('Registro de Usuários', function () {
 
     const senderRegisterResponse = http.post(...);
+    
     check(senderRegisterResponse, {...});
 
     const recipientRegisterResponse = http.post(...);
+    
     check(recipientRegisterResponse, {...});
 });
 
 group('Login dos Usuários', function () {
+
     senderToken = login(baseURL, senderUsername, password);
+    
     recipientToken = login(baseURL, recipientUsername, password);
+    
 });
 
 group('Checkout (Transferência)', function () {
+
     const checkoutResponse = http.post(...);
+    
     transferDuration.add(checkoutResponse.timings.duration);
+    
     check(checkoutResponse, {...});
 });
 
 
-**Explicação**: Organiza o teste em grupos lógicos. Melhora a legibilidade e permite análise de métricas por grupo específico nos relatórios. Neste caso  os grupos de: Registro do usuário, Login do usuário e o Checkout para a transferencia.
+**Explicação**: Organiza o teste em grupos lógicos. Melhora a legibilidade e
+permite análise de métricas por grupo específico nos relatórios. Neste caso  os grupos de: 
+Registro do usuário, Login do usuário e o Checkout para a transferencia.
 
 ---
 
