@@ -22,7 +22,7 @@ test/k6/
 
 ├── helpers/
 
-│   ├── emailGenerator.js      # Gerador de emails com 
+│   ├── emailGenerator.js      # Gerador de emails com
 
 │   ├── getBaseURL.js          # Helper para variável de ambiente
 
@@ -52,23 +52,23 @@ test/k6/
 
 export const options = {
   stages: [
-  
+
     { duration: "5s", target: 5 },
-    
-    { duration: "10s", target: 10 
-    
+
+    { duration: "10s", target: 10
+
     { duration: "5s", target: 10 },
-    
+
     { duration: "5s", target: 0 },
   ],
   thresholds: {
-  
+
     http_req_duration: ["p(95)<2000"],
-    
+
     transfer_duration: ["p(95)<2000"]
 };
 
-**Explicação**: Definido como critério de sucesso para o teste. 
+**Explicação**: Definido como critério de sucesso para o teste.
 O teste passa apenas se 95% das requisições HTTP e transferências forem executadas em menos de 2 segundos.
 
 ---
@@ -96,7 +96,7 @@ check(checkoutResponse, {
 });
 
 
-**Explicação**: Validações que verificam se as respostas HTTP estão conforme esperado. 
+**Explicação**: Validações que verificam se as respostas HTTP estão conforme esperado.
 Similar a assertions em testes unitários, mas não interrompem a execução do teste.
 
 ---
@@ -112,16 +112,16 @@ import { check } from "k6";
 export function login(baseURL, username, password) {
 
   const loginPayload = JSON.stringify({
-  
+
     username: username,
-    
+
     password: password,
   });
 
   const params = {
-  
+
     headers: {
-    
+
       "Content-Type": "application/json",
     },
   };
@@ -129,14 +129,14 @@ export function login(baseURL, username, password) {
   const response = http.post(`${baseURL}/users/login`, loginPayload, params);
 
   check(response, {
-  
+
     "Login status is 200": (r) => r.status === 200,
   });
 
-  if (response.status === 200) 
-  
+  if (response.status === 200)
+
     const body = JSON.parse(response.body);
-    
+
     return body.token;
   }
 
@@ -150,7 +150,7 @@ export function login(baseURL, username, password) {
 senderToken = login(baseURL, senderUsername, password);
 
 
-**Explicação**: Função reutilizável que encapsula a lógica de login. 
+**Explicação**: Função reutilizável que encapsula a lógica de login.
 Pode ser usada em múltiplos testes, promovendo DRY (Don't Repeat Yourself).
 
 ---
@@ -168,16 +168,16 @@ const transferDuration = new Trend("transfer_duration");
 const checkoutResponse = http.post(
 
   `${baseURL}/transfers`,
-  
+
   checkoutPayload,
-  
+
   params
 );
 
 transferDuration.add(checkoutResponse.timings.duration);
 
 
-**Explicação**: Métrica customizada que rastreia a duração das transferências especificamente. 
+**Explicação**: Métrica customizada que rastreia a duração das transferências especificamente.
 Permite análise detalhada de performance de endpoints críticos.
 
 ---
@@ -215,7 +215,7 @@ const recipientUsername = generateRandomEmail();
 export function getBaseURL() {
 
   return __ENV.BASE_URL || "http://localhost:3000";
-  
+
 }
 
 
@@ -241,14 +241,14 @@ k6 run test/k6/checkout.test.js -e BASE_URL=https://api.production.com`
 
 export const options = {
 
-  stages: 
-  
+  stages:
+
     { duration: "5s", target: 5 }, // Ramp-up: 0 → 5 VUs em 5s
-    
+
     { duration: "10s", target: 10 }, // Carga: 5 → 10 VUs em 10s
-    
+
     { duration: "5s", target: 10 }, // Sustentação: mantém 10 VUs por 5s
-    
+
     { duration: "5s", target: 0 }, // Ramp-down: 10 → 0 VUs em 5s
   ],
   // ...
@@ -268,22 +268,22 @@ let senderToken, recipientToken;
 group("Login dos Usuários", function () {
 
   senderToken = login(baseURL, senderUsername, password);
-  
+
   recipientToken = login(baseURL, recipientUsername, password);
-  
+
 });
 
 // reutiliza o token
 if (senderToken && recipientToken) {
 
   group("Checkout (Transferência)", function () {
-  
+
     const params = {
-    
+
       headers: {
-      
+
         "Content-Type": "application/json",
-        
+
         Authorization: `Bearer ${senderToken}`, // Token reutilizado aqui
       },
     };
@@ -338,19 +338,19 @@ const dataUsers = new SharedArray("dataUsers", function () {
 [
   {
     "email": "john@example.com",
-    
+
     "password": "password123"
   },
-  
+
   {
     "email": "jane@example.com",
-    
+
     "password": "password456"
-  
-  
+
+
   {
     "email": "bob@example.com",
-    
+
     "password": "password789"
   }
 ]
@@ -364,15 +364,15 @@ export default function () {
   const user = dataUsers[(__VU - 1) % dataUsers.length];
 
   const loginPayload = JSON.stringify({
-  
+
     username: user.email,
-    
+
     password: user.password,
   });
   // ...
 }
 
-**Explicação**: Carrega dados de teste de arquivo JSON externo. 
+**Explicação**: Carrega dados de teste de arquivo JSON externo.
 Cada VU (Virtual User,  SharedArray/k6 ) usa um usuário diferente do array, permitindo testes parametrizados (reaproveitamento).
 
 ---
@@ -385,34 +385,34 @@ Cada VU (Virtual User,  SharedArray/k6 ) usa um usuário diferente do array, per
 group('Registro de Usuários', function () {
 
     const senderRegisterResponse = http.post(...);
-    
+
     check(senderRegisterResponse, {...});
 
     const recipientRegisterResponse = http.post(...);
-    
+
     check(recipientRegisterResponse, {...});
 });
 
 group('Login dos Usuários', function () {
 
     senderToken = login(baseURL, senderUsername, password);
-    
+
     recipientToken = login(baseURL, recipientUsername, password);
-    
+
 });
 
 group('Checkout (Transferência)', function () {
 
     const checkoutResponse = http.post(...);
-    
+
     transferDuration.add(checkoutResponse.timings.duration);
-    
+
     check(checkoutResponse, {...});
 });
 
 
 **Explicação**: Organiza o teste em grupos lógicos. Melhora a legibilidade e
-permite análise de métricas por grupo específico nos relatórios. Neste caso  os grupos de: 
+permite análise de métricas por grupo específico nos relatórios. Neste caso  os grupos de:
 Registro do usuário, Login do usuário e o Checkout para a transferencia.
 
 ---
@@ -471,6 +471,11 @@ k6 run test/k6/checkout.test.js --out json=test/k6/reports/checkout-report.json
 ```bash
 # Após gerar o JSON
 node test/k6/reports/generate-html.js
+
+
+E/OU
+
+K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_EXPORT=html-report.html k6 run test/k6/checkout.test.js
 ```
 
 ---
@@ -481,14 +486,15 @@ node test/k6/reports/generate-html.js
 
 - **JSON**: `test/k6/reports/checkout-report.json`
 - **HTML**: `test/k6/reports/checkout-report.html`
+- **HTML**: `html-report.html`
 
 ### Visualizar Relatório HTML
 
 ```bash
-# Abrir no navegador
+# Abrir no navegador # Linux
 
-xdg-open test/k6/reports/checkout-report.html  # Linux
-
+xdg-open test/k6/reports/checkout-report.html
+xdg-open html-report.html
 ```
 
 ### Métricas Principais
@@ -534,7 +540,7 @@ xdg-open test/k6/reports/checkout-report.html  # Linux
 
 ##  Autor
 
-Projeto desenvolvido como Trabalho de Conclusão do curso de Testes de Performance com K6.
+Projeto desenvolvido como Trabalho de Conclusão da Disciplina  de Testes de Performance com K6.
 
 **Data de Entrega**: 21 de dezembro de 2025
 
@@ -545,3 +551,4 @@ Projeto desenvolvido como Trabalho de Conclusão do curso de Testes de Performan
 - [Documentação K6](https://k6.io/docs/)
 - [K6 Faker Extension](https://github.com/szkiba/xk6-faker)
 - [Best Practices K6](https://k6.io/docs/testing-guides/test-types/)
+ K6_WEB_DASHBOARD_EXPORT=\"test/test-reports/html-report.html
